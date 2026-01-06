@@ -130,9 +130,11 @@ class _TimerDisplayState extends State<TimerDisplay>
                   child: CircularProgressIndicator(
                     value: 1,
                     strokeWidth: 12,
-                    backgroundColor: widget.foregroundColor.withOpacity(0.2),
+                    backgroundColor: widget.foregroundColor.withValues(
+                      alpha: 0.2,
+                    ),
                     valueColor: AlwaysStoppedAnimation<Color>(
-                      widget.foregroundColor.withOpacity(0.2),
+                      widget.foregroundColor.withValues(alpha: 0.2),
                     ),
                   ),
                 ),
@@ -186,7 +188,7 @@ class _TimerDisplayState extends State<TimerDisplay>
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w600,
-              color: widget.foregroundColor.withOpacity(0.7),
+              color: widget.foregroundColor.withValues(alpha: 0.7),
               letterSpacing: 2,
             ),
           ),
