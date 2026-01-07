@@ -90,14 +90,25 @@ class _HomeViewState extends State<HomeView>
                 ),
                 tooltip: 'Configurações',
               ),
-              title: AnimatedDefaultTextStyle(
-                duration: const Duration(milliseconds: 300),
-                style: TextStyle(
-                  color: foregroundColor,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                ),
-                child: const Text('Pomodoro Timer'),
+              title: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    'assets/images/pomodoro_icon.png',
+                    width: 32,
+                    height: 32,
+                  ),
+                  const SizedBox(width: 8),
+                  AnimatedDefaultTextStyle(
+                    duration: const Duration(milliseconds: 300),
+                    style: TextStyle(
+                      color: foregroundColor,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    child: const Text('Pomodoro Timer'),
+                  ),
+                ],
               ),
               centerTitle: true,
               actions: [
@@ -122,48 +133,61 @@ class _HomeViewState extends State<HomeView>
               ],
             ),
             body: SafeArea(
-              child: Column(
-                children: [
-                  const SizedBox(height: 40),
-                  // Indicador da fase atual (Foco, Pausa Curta, Pausa Longa)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    child: _buildPhaseIndicator(
-                      state,
-                      foregroundColor,
-                      isActive,
-                    ),
-                  ),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight,
+                      ),
+                      child: IntrinsicHeight(
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 40),
+                            // Indicador da fase atual (Foco, Pausa Curta, Pausa Longa)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 20),
+                              child: _buildPhaseIndicator(
+                                state,
+                                foregroundColor,
+                                isActive,
+                              ),
+                            ),
 
-                  // Timer principal com indicador circular
-                  Expanded(
-                    child: Center(
-                      child: TimerDisplay(
-                        state: state,
-                        foregroundColor: foregroundColor,
+                            // Timer principal com indicador circular
+                            Expanded(
+                              child: Center(
+                                child: TimerDisplay(
+                                  state: state,
+                                  foregroundColor: foregroundColor,
+                                ),
+                              ),
+                            ),
+
+                            // Indicadores de pomodoros completados (circulos com check)
+                            PomodoroIndicator(
+                              completedPomodoros: state.completedPomodoros,
+                              foregroundColor: foregroundColor,
+                            ),
+                            const SizedBox(height: 20),
+
+                            // Botoes de controle (iniciar, pausar, resetar, pular)
+                            ControlButtons(
+                              state: state,
+                              foregroundColor: foregroundColor,
+                              backgroundColor: backgroundColor,
+                              onStart: viewModel.startTimer,
+                              onPause: viewModel.pauseTimer,
+                              onReset: viewModel.resetTimer,
+                              onSkip: viewModel.skipPhase,
+                            ),
+                            const SizedBox(height: 40),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-
-                  // Indicadores de pomodoros completados (circulos com check)
-                  PomodoroIndicator(
-                    completedPomodoros: state.completedPomodoros,
-                    foregroundColor: foregroundColor,
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Botoes de controle (iniciar, pausar, resetar, pular)
-                  ControlButtons(
-                    state: state,
-                    foregroundColor: foregroundColor,
-                    backgroundColor: backgroundColor,
-                    onStart: viewModel.startTimer,
-                    onPause: viewModel.pauseTimer,
-                    onReset: viewModel.resetTimer,
-                    onSkip: viewModel.skipPhase,
-                  ),
-                  const SizedBox(height: 40),
-                ],
+                  );
+                },
               ),
             ),
           ),
