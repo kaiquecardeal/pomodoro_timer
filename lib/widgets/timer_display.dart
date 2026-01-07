@@ -165,7 +165,7 @@ class _TimerDisplayState extends State<TimerDisplay>
       mainAxisSize: MainAxisSize.min,
       children: [
         AnimatedSwitcher(
-          duration: const Duration(microseconds: 200),
+          duration: const Duration(milliseconds: 200),
           transitionBuilder: (child, animation) {
             return FadeTransition(opacity: animation, child: child);
           },

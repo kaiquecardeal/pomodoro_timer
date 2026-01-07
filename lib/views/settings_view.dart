@@ -20,7 +20,7 @@ class SettingsView extends StatelessWidget {
               const SizedBox(height: 24),
 
               _buildSectionTitle('Sobre o pomodoro'),
-              _buildInfoCard(),
+              _buildInfoCardExpandable(),
 
               const SizedBox(height: 24),
 
@@ -83,27 +83,27 @@ class SettingsView extends StatelessWidget {
 
   /// Constroi o card informativo sobre a Tecnica Pomodoro.
   /// Exibe uma breve descricao da historia e proposito da tecnica.
-  Widget _buildInfoCard() {
+  Widget _buildInfoCardExpandable() {
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Técnica Pomodoro',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Text(
+      child: ExpansionTile(
+        leading: const Icon(Icons.info_outline, color: Colors.blue),
+        title: const Text(
+          'Tecnica Pomodoro',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        subtitle: const Text('Toque para saber mais'),
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
               'A técnica Pomodoro é um método de gerenciamento de tempo desenvolvido por Francesco Cirillo no final dos anos 1980. '
               'Ela utiliza um cronômetro para dividir o trabalho em intervalos, tradicionalmente de 25 minutos de duração, '
               'separados por breves intervalos. Cada intervalo é conhecido como "pomodoro", a palavra italiana para "tomate", '
               'em homenagem ao cronômetro de cozinha em forma de tomate que Cirillo usava como estudante.',
-              style: TextStyle(fontSize: 14, color: Colors.black87),
+              style: const TextStyle(fontSize: 14, color: Colors.black87),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
