@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:pomodoro_timer/models/pomodoro_state.dart';
 
 /// Widget que exibe os indicadores de pomodoros completados

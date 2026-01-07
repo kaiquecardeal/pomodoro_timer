@@ -45,6 +45,11 @@ class PomodoroViewModel extends ChangeNotifier {
   bool _notificationsEnabled = false;
   bool get notificationsEnabled => _notificationsEnabled;
 
+  bool _isDarkMode = false;
+  bool get isDarkMode => _isDarkMode;
+
+  ThemeMode get themeMode => _isDarkMode ? ThemeMode.dark : ThemeMode.light;
+
   // ============ TIMER ============
 
   /// Timer periodico que controla a contagem regressiva
@@ -67,6 +72,8 @@ class PomodoroViewModel extends ChangeNotifier {
     // Recupera preferencias de notificacoes salvas
     _notificationsEnabled = await _storageService.getNotificationsEnabled();
     _notificationServices.setNotificationsEnabled(_notificationsEnabled);
+
+    _isDarkMode = await _storageService.getDarkModeEnabled();
 
     // Recupera contador de pomodoros da sessao anterior
     final savedPomodoros = await _storageService.getCompletedPomodoros();
@@ -158,18 +165,7 @@ class PomodoroViewModel extends ChangeNotifier {
     WakelockPlus.disable();
 
     // Determina a duracao inicial baseada na fase atual
-    int duration;
-    switch (_state.currentPhase) {
-      case PomodoroPhase.work:
-        duration = PomodoroState.workDuration;
-        break;
-      case PomodoroPhase.shortBreak:
-        duration = PomodoroState.shortBreakDuration;
-        break;
-      case PomodoroPhase.longBreak:
-        duration = PomodoroState.longBreakDuration;
-        break;
-    }
+    final duration = PomodoroState.getDurationForPhase(_state.currentPhase);
 
     _state = _state.copyWith(
       remainingSeconds: duration,
@@ -240,6 +236,12 @@ class PomodoroViewModel extends ChangeNotifier {
       isRunning: false,
       isPaused: false,
     );
+    notifyListeners();
+  }
+
+  void toggleDarkMode() {
+    _isDarkMode = !_isDarkMode;
+    _storageService.saveDarkModeEnabled(_isDarkMode);
     notifyListeners();
   }
 

@@ -15,6 +15,10 @@ class SettingsView extends StatelessWidget {
           body: ListView(
             padding: const EdgeInsets.all(16.0),
             children: [
+              _buildSectionTitle('Tema'),
+              _buildDarkModeTile(context, viewModel),
+              const SizedBox(height: 24),
+
               _buildSectionTitle('Notificações'),
               _buildNotificationTile(context, viewModel),
               const SizedBox(height: 24),
@@ -61,7 +65,7 @@ class SettingsView extends StatelessWidget {
       child: SwitchListTile(
         title: const Text('Notificações'),
         subtitle: Text(
-          viewModel.notificationsEnabled
+          viewModel.hasNotificationPermission
               ? (viewModel.notificationsEnabled
                     ? 'Notificações ativadas'
                     : 'Notificacoes desativas')
@@ -171,6 +175,21 @@ class SettingsView extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildDarkModeTile(BuildContext context, PomodoroViewModel viewModel) {
+    return Card(
+      child: SwitchListTile(
+        title: const Text('Modo Escuro'),
+        subtitle: Text(viewModel.isDarkMode ? 'Ativado' : 'Desativado'),
+        value: viewModel.isDarkMode,
+        onChanged: (_) => viewModel.toggleDarkMode(),
+        secondary: Icon(
+          viewModel.isDarkMode ? Icons.dark_mode : Icons.light_mode,
+          color: viewModel.isDarkMode ? Colors.blueGrey : Colors.amber,
+        ),
       ),
     );
   }

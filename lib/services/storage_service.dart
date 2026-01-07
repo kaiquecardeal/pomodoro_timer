@@ -17,6 +17,8 @@ class StorageService {
   /// Chave para armazenar a preferencia de notificacoes
   static const String _notificationsEnabledKey = 'notifications_enabled';
 
+  static const String _darkModeEnabledKey = 'dark_mode_enabled';
+
   // ============ METODOS DE POMODOROS ============
 
   /// Salva o numero de pomodoros completados na sessao atual.
@@ -55,5 +57,15 @@ class StorageService {
   Future<bool> getNotificationsEnabled() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool(_notificationsEnabledKey) ?? true;
+  }
+
+  Future<void> saveDarkModeEnabled(bool isEnabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_darkModeEnabledKey, isEnabled);
+  }
+
+  Future<bool> getDarkModeEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_darkModeEnabledKey) ?? false;
   }
 }

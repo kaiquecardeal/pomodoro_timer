@@ -83,34 +83,44 @@ class PomodoroState {
   }
 
   /// Retorna o titulo da fase atual em portugues
-  String get phaseTitle {
-    switch (currentPhase) {
-      case PomodoroPhase.work:
-        return 'Foco no Trabalho';
-      case PomodoroPhase.shortBreak:
-        return 'Pausa Curta';
-      case PomodoroPhase.longBreak:
-        return 'Pausa Longa';
-    }
+  String get phaseTitle => switch (currentPhase) {
+    PomodoroPhase.work => 'Foco',
+    PomodoroPhase.shortBreak => 'Pausa Curta',
+    PomodoroPhase.longBreak => 'Pausa Longa',
+  };
+
+  static int getDurationForPhase(PomodoroPhase phase) {
+    return switch (phase) {
+      PomodoroPhase.work => workDuration,
+      PomodoroPhase.shortBreak => shortBreakDuration,
+      PomodoroPhase.longBreak => longBreakDuration,
+    };
   }
 
   /// Calcula o progresso da fase atual (0.0 a 1.0)
   /// Usado para o indicador circular de progresso
   double get progress {
-    int totalDuration;
-    switch (currentPhase) {
-      case PomodoroPhase.work:
-        totalDuration = workDuration;
-        break;
-      case PomodoroPhase.shortBreak:
-        totalDuration = shortBreakDuration;
-        break;
-      case PomodoroPhase.longBreak:
-        totalDuration = longBreakDuration;
-        break;
-    }
-    // Retorna progresso invertido (1 - restante/total)
-    // Assim o progresso aumenta conforme o tempo passa
+    final totalDuration = getDurationForPhase(currentPhase);
     return 1 - (remainingSeconds / totalDuration);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PomodoroState &&
+          runtimeType == other.runtimeType &&
+          remainingSeconds == other.remainingSeconds &&
+          currentPhase == other.currentPhase &&
+          completedPomodoros == other.completedPomodoros &&
+          isRunning == other.isRunning &&
+          isPaused == other.isPaused;
+
+  @override
+  int get hashCode => Object.hash(
+    remainingSeconds,
+    currentPhase,
+    completedPomodoros,
+    isRunning,
+    isPaused,
+  );
 }

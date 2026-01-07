@@ -32,11 +32,27 @@ class PomodoroApp extends StatelessWidget {
     // Permite que qualquer widget filho acesse o estado do Pomodoro
     return ChangeNotifierProvider(
       create: (_) => PomodoroViewModel(),
-      child: MaterialApp(
-        title: 'Pomodoro Timer',
-        debugShowCheckedModeBanner: false, // Remove o banner de debug
-        theme: ThemeData(useMaterial3: true, fontFamily: 'Roboto'),
-        home: const HomeView(),
+      child: Consumer<PomodoroViewModel>(
+        builder: (context, viewModel, _) {
+          return MaterialApp(
+            title: 'Pomodoro Timer',
+            debugShowCheckedModeBanner: false, // Remove o banner de debug
+            theme: ThemeData(
+              useMaterial3: true,
+              fontFamily: 'Roboto',
+              brightness: Brightness.light,
+              colorSchemeSeed: Colors.red,
+            ),
+            darkTheme: ThemeData(
+              useMaterial3: true,
+              fontFamily: 'Roboto',
+              brightness: Brightness.dark,
+              colorSchemeSeed: Colors.red,
+            ),
+            themeMode: viewModel.themeMode,
+            home: const HomeView(),
+          );
+        },
       ),
     );
   }
