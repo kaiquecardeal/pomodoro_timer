@@ -56,7 +56,7 @@ class SettingsView extends StatelessWidget {
 
   /// Constroi o tile de configuracao de notificacoes.
   /// Exibe um switch para ativar/desativar notificacoes.
-  /// O switch fica desabilitado se o usuario nao concedeu permissao.
+  /// Solicita permissao automaticamente ao tentar ativar.
   Widget _buildNotificationTile(
     BuildContext context,
     PomodoroViewModel viewModel,
@@ -65,16 +65,31 @@ class SettingsView extends StatelessWidget {
       child: SwitchListTile(
         title: const Text('Notificações'),
         subtitle: Text(
-          viewModel.hasNotificationPermission
-              ? (viewModel.notificationsEnabled
-                    ? 'Notificações ativadas'
-                    : 'Notificacoes desativas')
-              : 'Permissao nao concedida.',
+          viewModel.notificationsEnabled
+              ? 'Notificações ativadas'
+              : 'Notificações desativadas',
         ),
         value: viewModel.notificationsEnabled,
-        onChanged: viewModel.hasNotificationPermission
-            ? (_) => viewModel.toggleNotifications()
-            : null,
+        onChanged: (value) async {
+          if (value) {
+            // Ao tentar ativar, solicita permissão se necessário
+            if (!viewModel.hasNotificationPermission) {
+              final granted = await viewModel.requestNotificationPermission();
+              if (!granted && context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Permissão de notificação não concedida. '
+                      'Por favor, habilite nas configurações do sistema.',
+                    ),
+                  ),
+                );
+                return;
+              }
+            }
+          }
+          viewModel.toggleNotifications();
+        },
         secondary: Icon(
           viewModel.notificationsEnabled
               ? Icons.notifications_active
